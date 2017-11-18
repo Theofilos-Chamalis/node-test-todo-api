@@ -2,9 +2,12 @@
 // const MongoClient = require('mongodb').MongoClient;
 
 //Connect to Mongo using ES6 Object destructuring to get also ObjectID for new IDs creation
-const {MongoClient, ObjectID} = require('mongodb');
+const {
+    MongoClient,
+    ObjectID
+} = require('mongodb');
 
-//Connect to mongoDB in the TodoApp database
+//Connect to the TodoApp database inside Mongo (the URL is its location)
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (error, db) => {
     if (error) {
         return console.log('Unable to connect to mongodb server');
@@ -19,9 +22,9 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (error, db) => {
     db.collection('Todos').insertOne({
         text: 'Something to do',
         completed: false
-    },(err,result)=>{
-        if(err){
-            return console.log('Unable to insert todo : ',err);
+    }, (err, result) => {
+        if (err) {
+            return console.log('Unable to insert todo : ', err);
         }
         console.log(JSON.stringify(result.ops, undefined, 2));
     });

@@ -1,6 +1,10 @@
 // const MongoClient = require('mongodb').MongoClient;
-const {MongoClient, ObjectID} = require('mongodb');
+const {
+    MongoClient,
+    ObjectID
+} = require('mongodb');
 
+//Connect to the TodoApp database inside Mongo (the URL is its location)
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (error, db) => {
     if (error) {
         return console.log('Unable to connect to mongodb server');
@@ -8,17 +12,23 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (error, db) => {
     console.log('Connected to mongodb server');
 
     //deleteMany deletes all the documents that meet the criteria
-    db.collection('Todos').deleteMany({text: 'Eat lunch'}).then((res)=>{
+    db.collection('Todos').deleteMany({
+        text: 'Eat lunch'
+    }).then((res) => {
         console.log(res);
     });
 
     //deleteOne deletes the first document that meets the criteria
-    db.collection('Todos').deleteOne({text: 'Eat lunch'}).then((res)=>{
+    db.collection('Todos').deleteOne({
+        text: 'Eat lunch'
+    }).then((res) => {
         console.log(res);
     });
 
     //findOneAndDelete deletes the first document that meets the criteria and then returns it as well
-    db.collection('Todos').findOneAndDelete({completed: false}).then((res)=>{
+    db.collection('Todos').findOneAndDelete({
+        completed: false
+    }).then((res) => {
         console.log(res);
     });
 
