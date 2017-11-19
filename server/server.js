@@ -1,12 +1,20 @@
 //Import express, body-parser and the ObjectID from native mongodb driver so we can use the isValid method of it
 var express = require('express');
 var bodyParser = require('body-parser');
-var { ObjectID} = require('mongodb');
+var {
+    ObjectID
+} = require('mongodb');
 
 //Import mongoose which is connected to mongo and our models
-var {mongoose} = require('./db/mongoose.js');
-var {Todo} = require('./models/todo');
-var {User} = require('./models/user');
+var {
+    mongoose
+} = require('./db/mongoose.js');
+var {
+    Todo
+} = require('./models/todo');
+var {
+    User
+} = require('./models/user');
 
 //Create an express instance and set a port variable
 var app = express();
@@ -59,6 +67,26 @@ app.get('/todos/:id', (req, res) => {
         });
     }).catch((er) => {
         res.status(400).send(er.message);
+    });
+});
+
+//Setup a route for delete requests of a single todo at /todos/id endpoint
+app.delete('/todos/:id', (req, res) => {
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    Todo.findByIdAndRemove(id).then((todo) => {
+        if (todo === null) {
+            return res.status(404).send();
+        }
+        res.send({
+            todo
+        });
+    }).catch((error) => {
+        res.status(400).send(error.message);
     });
 });
 
