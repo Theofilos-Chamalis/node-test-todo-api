@@ -3,9 +3,15 @@ var express = require('express');
 var bodyParser = require('body-parser');
 
 //Import mongoose which is connected to mongo and our models
-var {mongoose} = require('./db/mongoose.js');
-var {Todo} = require('./models/todo');
-var {User} = require('./models/user');
+var {
+    mongoose
+} = require('./db/mongoose.js');
+var {
+    Todo
+} = require('./models/todo');
+var {
+    User
+} = require('./models/user');
 
 // Create an express instance and set a port variable
 var app = express();
@@ -25,7 +31,15 @@ app.post('/todos', (req, res) => {
     }, (e) => {
         res.status(400).send(e);
     });
+});
 
+//Setup a route for get requests at /todos endpoint
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.send({todos});
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
 //Start our server
