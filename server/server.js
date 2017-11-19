@@ -1,20 +1,13 @@
 //Import express, body-parser and the ObjectID from native mongodb driver so we can use the isValid method of it
-var express = require('express');
-var bodyParser = require('body-parser');
-var {
-    ObjectID
-} = require('mongodb');
+const express = require('express');
+const bodyParser = require('body-parser');
+const _ = require('lodash');
+const {ObjectID} = require('mongodb');
 
 //Import mongoose which is connected to mongo and our models
-var {
-    mongoose
-} = require('./db/mongoose.js');
-var {
-    Todo
-} = require('./models/todo');
-var {
-    User
-} = require('./models/user');
+var {mongoose} = require('./db/mongoose.js');
+var {Todo} = require('./models/todo');
+var {User} = require('./models/user');
 
 //Create an express instance and set a port variable
 var app = express();
@@ -40,9 +33,7 @@ app.post('/todos', (req, res) => {
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
         //Send this as a property inside a JSON for more tweakability in the future
-        res.send({
-            todos
-        });
+        res.send({todos});
     }, (e) => {
         //We could not send the error for security reasons
         res.status(400).send(e.message);
@@ -62,9 +53,7 @@ app.get('/todos/:id', (req, res) => {
         if (todo === null) {
             return res.status(404).send();
         }
-        res.send({
-            todo
-        });
+        res.send({todo});
     }).catch((er) => {
         res.status(400).send(er.message);
     });
@@ -82,11 +71,38 @@ app.delete('/todos/:id', (req, res) => {
         if (todo === null) {
             return res.status(404).send();
         }
-        res.send({
-            todo
-        });
+        res.send({todo});
     }).catch((error) => {
         res.status(400).send(error.message);
+    });
+});
+
+//Setup a route for patch requests of a single todo at /todos/id endpoint
+app.patch('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['text', 'completed']);
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    //If we update the todo to be completed, write the timestamp
+    if (_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    //The actual update query to MongoDB where we set the properties of body to update the document with the chosen id
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+        if (todo === null) {
+            return res.status(404).send();
+        }
+
+        res.send({todo});
+    }).catch((e) => {
+        res.status(400).send();
     });
 });
 
