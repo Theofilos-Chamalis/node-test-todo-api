@@ -10,7 +10,7 @@ var {User} = require('./models/user');
 
 //Create an express instance and set a port variable
 var app = express();
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 //Get the body of a request as a json using body-parser
 app.use(bodyParser.json());
