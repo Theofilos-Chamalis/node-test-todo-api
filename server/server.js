@@ -2,12 +2,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
-const {ObjectID} = require('mongodb');
+const {
+    ObjectID
+} = require('mongodb');
 
 //Import mongoose which is connected to mongo and our models
-var {mongoose} = require('./db/mongoose.js');
-var {Todo} = require('./models/todo');
-var {User} = require('./models/user');
+var {
+    mongoose
+} = require('./db/mongoose.js');
+var {
+    Todo
+} = require('./models/todo');
+var {
+    User
+} = require('./models/user');
 
 //Create an express instance and set a port variable
 var app = express();
@@ -29,11 +37,27 @@ app.post('/todos', (req, res) => {
     });
 });
 
+//Setup a route for post requests at /users endpoint
+app.post('/users', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    var user = new User(body);
+
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send(user);
+    }).catch((er) => {
+        res.status(400).send(er.message);
+    });
+});
+
 //Setup a route for get requests of all todos at /todos endpoint
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
         //Send this as a property inside a JSON for more tweakability in the future
-        res.send({todos});
+        res.send({
+            todos
+        });
     }, (e) => {
         //We could not send the error for security reasons
         res.status(400).send(e.message);
@@ -53,7 +77,9 @@ app.get('/todos/:id', (req, res) => {
         if (todo === null) {
             return res.status(404).send();
         }
-        res.send({todo});
+        res.send({
+            todo
+        });
     }).catch((er) => {
         res.status(400).send(er.message);
     });
@@ -71,7 +97,9 @@ app.delete('/todos/:id', (req, res) => {
         if (todo === null) {
             return res.status(404).send();
         }
-        res.send({todo});
+        res.send({
+            todo
+        });
     }).catch((error) => {
         res.status(400).send(error.message);
     });
@@ -95,12 +123,18 @@ app.patch('/todos/:id', (req, res) => {
     }
 
     //The actual update query to MongoDB where we set the properties of body to update the document with the chosen id
-    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    Todo.findByIdAndUpdate(id, {
+        $set: body
+    }, {
+        new: true
+    }).then((todo) => {
         if (todo === null) {
             return res.status(404).send();
         }
 
-        res.send({todo});
+        res.send({
+            todo
+        });
     }).catch((e) => {
         res.status(400).send();
     });
