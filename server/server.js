@@ -164,6 +164,15 @@ app.patch('/todos/:id', (req, res) => {
     });
 });
 
+//Delete a token from a user, i.e. log him out
+app.delete('/users/me/token', authenticate, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send();
+    }, () => {
+        res.status(400).send();
+    });
+});
+
 //Start our server
 app.listen(port, () => {
     console.log(`Started listening on port ${port}`);

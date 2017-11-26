@@ -61,6 +61,28 @@ UserSchema.methods.generateAuthToken = function () {
     });
 };
 
+//We want to override the inbuilt mongoose toJSON method so
+//that we do not send back to the user unecessary data
+UserSchema.methods.toJSON = function () {
+    var user = this;
+    var userObject = user.toObject();
+    return _.pick(userObject, ['_id', 'email']);
+};
+
+//Remove the token from a user in order to log him out
+//The $pull operator removes data based on criteria
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
+
+    return user.update({
+        $pull: {
+            tokens: {
+                token: token
+            }
+        }
+    });
+};
+
 //This turns to a model method and not an instance method.
 //The keyword 'this' refers to the model here
 UserSchema.statics.findByToken = function (token) {
@@ -104,15 +126,6 @@ UserSchema.statics.findByCredentials = function (email, password) {
         });
 
     });
-};
-
-
-//We want to override the inbuilt mongoose toJSON method so
-//that we do not send back to the user unecessary data
-UserSchema.methods.toJSON = function () {
-    var user = this;
-    var userObject = user.toObject();
-    return _.pick(userObject, ['_id', 'email']);
 };
 
 //Mongoose middleware. This lets us run some code before saving
