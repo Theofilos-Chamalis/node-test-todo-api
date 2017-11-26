@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 //usePushEach option is used at the end, since .push
 //does not work normally for this version of mongoose
@@ -88,6 +89,25 @@ UserSchema.methods.toJSON = function () {
     var userObject = user.toObject();
     return _.pick(userObject, ['_id', 'email']);
 };
+
+//Mongoose middleware. This lets us run some code before saving
+//it to mongoDB, i.e. hashing the password that is going to be saved 
+UserSchema.pre('save', function (next) {
+    var user = this;
+
+    if (user.isModified('password')) {
+        var password = user.password;
+
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
 
 //Create the User Collection model and use a custom npm module validator for email validation
 var User = mongoose.model('User', UserSchema);
