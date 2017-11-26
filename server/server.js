@@ -16,6 +16,9 @@ var {
 var {
     User
 } = require('./models/user');
+var {
+    authenticate
+} = require('./middleware/authenticate');
 
 //Create an express instance and set a port variable
 var app = express();
@@ -49,6 +52,11 @@ app.post('/users', (req, res) => {
     }).catch((er) => {
         res.status(400).send(er.message);
     });
+});
+
+//Setup a private route for get requests at /users/me endpoint
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user);
 });
 
 //Setup a route for get requests of all todos at /todos endpoint

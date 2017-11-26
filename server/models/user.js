@@ -41,7 +41,8 @@ var UserSchema = new mongoose.Schema({
 
 //This is going to be used for our instance methods of users
 //Here we need a traditional function because we will use 'this'
-//to access the document that we want the function to run on
+//to access the document that we want the function to run on i.e
+//the specific instance
 UserSchema.methods.generateAuthToken = function () {
     var user = this;
     var access = 'auth';
@@ -56,6 +57,27 @@ UserSchema.methods.generateAuthToken = function () {
     });
     return user.save().then(() => {
         return token;
+    });
+};
+
+//This turns to a model method and not an instance method.
+//The keyword 'this' refers to the model here
+UserSchema.statics.findByToken = function (token) {
+    var User = this;
+    var decoded;
+
+    try {
+        decoded = jwt.verify(token, 'secret');
+    } catch (e) {
+        //This promise will be returned by findByToken
+        return Promise.reject();
+    }
+
+    //The first quotes are used to access a nested property
+    return User.findOne({
+        _id: decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
     });
 };
 
