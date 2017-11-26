@@ -59,6 +59,22 @@ app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);
 });
 
+//Setup a post route at /users/login with email and password
+app.post('/users/login', (req, res) => {
+    var password = req.body.password;
+    var email = req.body.email;
+
+    //We get the user back from the mongoose model function
+    //and we create a new token for it
+    User.findByCredentials(email, password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
 //Setup a route for get requests of all todos at /todos endpoint
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
