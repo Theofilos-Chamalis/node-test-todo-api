@@ -7,14 +7,14 @@ const bcrypt = require('bcryptjs');
 var password = '123abc!';
 
 //This adds a salt to the password 
-bcrypt.genSalt(10, (err, salt)=>{
-    bcrypt.hash(password, salt, (err, hash)=>{
+bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
         console.log(hash);
     });
 });
 
 var hashedPassword = '$2a$10$wMNd1S9J7EzWRbBvnvgg7OIiXp7w214ZdKmeG24DZNIQ4uT99kN36';
-bcrypt.compare(password, hashedPassword, (err, res)=>{
+bcrypt.compare(password, hashedPassword, (err, res) => {
     console.log(res);
 });
 

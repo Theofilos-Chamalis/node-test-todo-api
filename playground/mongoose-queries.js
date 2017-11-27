@@ -1,10 +1,18 @@
 //Import the ObjectID variable from mongodb native driver to use the isValid() method
-const {ObjectID} = require('mongodb');
+const {
+    ObjectID
+} = require('mongodb');
 //Import mongoose connection to mongo
-const {mongoose} = require('./../server/db/mongoose');
+const {
+    mongoose
+} = require('./../server/db/mongoose');
 //Import the Todo and User models
-const {Todo} = require('./../server/models/todo');
-const {User} = require('./../server/models/user');
+const {
+    Todo
+} = require('./../server/models/todo');
+const {
+    User
+} = require('./../server/models/user');
 
 //ID from the todo collection in Mongo
 var id = '5a10895c94659856e774c5fa';
