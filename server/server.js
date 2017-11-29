@@ -1,3 +1,6 @@
+//Import the configuration file
+require('./config/config.js');
+
 //Import express, body-parser and the ObjectID from native mongodb driver so we can use the isValid method of it
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -22,7 +25,7 @@ var {
 
 //Create an express instance and set a port variable
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 //Get the body of a request as a json using body-parser
 app.use(bodyParser.json());
