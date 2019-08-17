@@ -37,8 +37,8 @@ var UserSchema = new mongoose.Schema({
         }
     }]
 }, {
-    usePushEach: true
-});
+        usePushEach: true
+    });
 
 //This is going to be used for our instance methods of users
 //Here we need a traditional function because we will use 'this'

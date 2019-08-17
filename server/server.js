@@ -163,20 +163,20 @@ app.patch('/todos/:id', authenticate, (req, res) => {
         _id: id,
         _creator: req.user._id
     }, {
-        $set: body
-    }, {
-        new: true
-    }).then((todo) => {
-        if (todo === null) {
-            return res.status(404).send();
-        }
+            $set: body
+        }, {
+            new: true
+        }).then((todo) => {
+            if (todo === null) {
+                return res.status(404).send();
+            }
 
-        res.send({
-            todo
+            res.send({
+                todo
+            });
+        }).catch((e) => {
+            res.status(400).send();
         });
-    }).catch((e) => {
-        res.status(400).send();
-    });
 });
 
 //Delete a token from a user, i.e. log him out
